@@ -100,12 +100,13 @@
 #define H3	0x40    // half current, coil 3 - 64 0100 0000
 #define F3	0x80    // full current, coil 3 - 128 1000 0000
 
-static uint8_t StepperPhaseTable[] = 
+// Quieter 32-phase microstepping table
+static uint8_t StepperPhaseTable[] =
 {
-    F0, F0|H1, F0|F1, H0|F1,
-    F1, F1|H2, F1|F2, H1|F2,
-    F2, F2|H3, F2|F3, H2|F3,
-    F3, F3|H0, F3|F0, H3|F0,
+    F0, F0, F0|H1, F0|H1, H0|F1, F1, F1, F1,
+    F1, F1, F1|H2, F1|H2, H1|F2, F2, F2, F2,
+    F2, F2, F2|H3, F2|H3, H2|F3, F3, F3, F3,
+    F3, F3, F3|H0, F3|H0, H3|F0, F0, F0, F0,
 };
 
 
@@ -626,8 +627,8 @@ void stepper_tick( void )
 	}
     else	// this is where the motion happens, command the stepper drives to the next step phase (1 out of 16)
     {
-		PORTA = StepperPhaseTable[ loc_x & 0x0f ];	// low 4 bits determine phase
-		PORTC = StepperPhaseTable[ loc_y & 0x0f ];
+		PORTA = StepperPhaseTable[ loc_x & 0x1f ];	// low 5 bits determine phase
+		PORTC = StepperPhaseTable[ loc_y & 0x1f ];
 		motor_off_delay = MOTOR_OFF_DEL;			// reset the timeout for the stepper motor power down
     }
 }
