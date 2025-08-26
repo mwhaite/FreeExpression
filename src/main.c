@@ -38,6 +38,7 @@
 #include "dial.h"
 #include "hpgl.h"
 #include "display.h"
+#include "cartridge.h"
 void setup(void);
 
 
@@ -48,6 +49,7 @@ void setup(void)
 	keypad_init( );
 	display_init();
 	usb_init();
+	cartridge_init();
 	timer_init( );
 	stepper_init( );
 	flash_init( );

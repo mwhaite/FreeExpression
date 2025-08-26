@@ -195,6 +195,12 @@
     <Compile Include="cli.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="cartridge.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="cartridge.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="configs.h">
       <SubType>compile</SubType>
     </Compile>
