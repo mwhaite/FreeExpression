@@ -1,4 +1,4 @@
-MCU = atmega1281
+MCU ?= atmega1281
 
 TARGET = libm2u8.a
 SRC +=  \
@@ -63,6 +63,7 @@ LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 SHELL = sh
 
 CC = avr-gcc
+AR = avr-ar
 
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
@@ -81,7 +82,7 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 all: $(TARGET) tags
 
 $(TARGET) : $(OBJ)
-	@ar rcs $(TARGET) $(OBJ)
+	$(AR) rcs $(TARGET) $(OBJ)
 .PHONY: prog 
 
 #you may need to change this line to program your device
@@ -140,6 +141,7 @@ clean :
 	rm -f $(SRC:.c=.s)
 	rm -f $(SRC:.c=.d)
 	rm -f logfile
+	rm -f $(TARGET)
 
 
 # Automatically generate C source code dependencies. 

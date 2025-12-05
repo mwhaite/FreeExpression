@@ -38,9 +38,27 @@ The recent updates include the option of using a Standard 4x20 LCD with a SPI in
 
 If you still want to proceed:
 
-You will need a ATMEL programmer device and an Atmel Studio 6.2 or newer installation. An ATMEL JTAG ICE MKII pod and the JTAG interface of the AVR is a good way to start. See picture and detailing connection and file Connector pinout.txt for details. you can also use an ISP programmer just to program the machine, no soldering necessary, just remove the bottom of the unit, uplug the cable from the from cartridge slot and route it out the front of the bottom of the case. Then plug this 10 pin connector into the 6 pin ISP connector, ensuring the red wire of the cable (pin 1) mates up with the pin 1 on your ISP header.  
+You will need a ATMEL programmer device and an Atmel Studio 6.2 or newer installation. An ATMEL JTAG ICE MKII pod and the JTAG interface of the AVR is a good way to start. See picture and detailing connection and file Connector pinout.txt for details. you can also use an ISP programmer just to program the machine, no soldering necessary, just remove the bottom of the unit, uplug the cable from the from cartridge slot and route it out the front of the bottom of the case. Then plug this 10 pin connector into the 6 pin ISP connector, ensuring the red wire of the cable (pin 1) mates up with the pin 1 on your ISP header.
 
-Use Inkscape to draw and send a file to the cutter.  Inkscape 0.91 has an export to Plot feature (under Extensions) which sends a HPGL langauge file to the COM port where the cutter is connected to. Use 9600 baud and  make sure XON/XOFF is selected for flow control. Inkscape works good on WIndows and Linux machines. 
+## Building from Linux command line
+
+You can compile the firmware on Debian/Ubuntu using the packaged AVR toolchain instead of Atmel Studio:
+
+1. Install dependencies and build in a single invocation:
+   ```bash
+   sudo apt-get update && sudo apt-get install build-essential gcc-avr binutils-avr avr-libc make avrdude ctags
+   make -C src
+   ```
+   The `src/Makefile` builds the bundled `m2u8` graphics library as part of the firmware link step, so there is no separate
+   library build command.
+2. Clean artifacts (including the library):
+   ```bash
+   make -C src clean
+   ```
+
+Use `MCU=<part>` or `CC=<compiler>` when invoking `make` if you need to target a different AVR or toolchain binary. The `prog` target still uses `avrdude` and may need customization for your programmer and serial device.
+
+Use Inkscape to draw and send a file to the cutter.  Inkscape 0.91 has an export to Plot feature (under Extensions) which sends a HPGL langauge file to the COM port where the cutter is connected to. Use 9600 baud and  make sure XON/XOFF is selected for flow control. Inkscape works good on WIndows and Linux machines.
 
 ----------
 

@@ -15,7 +15,10 @@ FCLK = 16000000UL
 # machine type
 MACHINE = EXPRESSION
 # List C source files here. (C dependencies are automatically generated.)
-SRC = main.c usb.c display.c display_oled.c g_code.c display_lcd.c keypad.c timer.c stepper.c cli.c flash.c dial.c hpgl.c shvars.c scale.c serial.c spi.c 
+SRC = main.c usb.c display.c display_oled.c g_code.c keypad.c timer.c stepper.c cli.c flash.c dial.c hpgl.c shvars.c scale.c serial.c spi.c
+
+M2U8_DIR = m2u8
+LIBM2U8 = $(M2U8_DIR)/libm2u8.a
 
 # Assembler sources 
 ASRC = 
@@ -41,7 +44,6 @@ LDFLAGS = -Wl,--gc-sections,-Map=$(TARGET).map,--cref
 #
 # -lm = math library
 LDFLAGS += -lm
-LDFLAGS += -L./m2u8 -lu8m2 -lm2u8
 # ---------------------------------------------------------------------------
 
 # Define directories, if needed.
@@ -61,11 +63,11 @@ OBJ = $(ASRC:.S=.o) $(SRC:.c=.o)
 LST = $(ASRC:.S=.lst) $(SRC:.c=.lst)
 
 # Combine all necessary flags and optional flags. Add target processor to flags.
-ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) 
+ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 # Default target.
-all: $(TARGET).elf $(TARGET).hex $(TARGET).lss tags
+all: $(LIBM2U8) $(TARGET).elf $(TARGET).hex $(TARGET).lss tags
 
 .PHONY: prog 
 
@@ -88,8 +90,8 @@ prog: all
 # Link: create ELF output file from object files.
 .SECONDARY : $(TARGET).elf
 .PRECIOUS : $(OBJ)
-%.elf: $(OBJ)
-	$(CC) $(ALL_CFLAGS) $(OBJ) --output $@ $(LDFLAGS)
+%.elf: $(OBJ) $(LIBM2U8)
+	$(CC) $(ALL_CFLAGS) $(OBJ) $(LIBM2U8) --output $@ $(LDFLAGS)
 
 
 # Compile: create object files from C source files.
@@ -125,6 +127,7 @@ clean :
 	rm -f $(SRC:.c=.s)
 	rm -f $(SRC:.c=.d)
 	rm -f logfile
+	$(MAKE) -C $(M2U8_DIR) clean
 
 
 # Automatically generate C source code dependencies. 
@@ -146,5 +149,8 @@ clean :
 
 tags: *.[hc]
 	ctags *.[hc]
+
+$(LIBM2U8):
+	$(MAKE) -C $(M2U8_DIR) MCU=$(MCU) CC=$(CC)
 
 
